@@ -1,0 +1,28 @@
+version: '3'
+services:
+  # JMeter是一个功能强大的性能测试工具，可以模拟多种类型的负载，并提供详细的测试报告
+  # 官网：https://jmeter.apache.org/
+  # 脚本：jmeter -n -t one.jmx -l one.jtl
+  Jmeter:
+    image: justb4/jmeter:5.5
+    container_name: jmeter
+    restart: always
+    environment:
+      - DISPLAY=:0
+      - TZ=Europe/Paris
+    volumes:
+      - ./jmx/:/opt/apache-jmeter-5.5/jmx/
+
+  # ApacheBench是一个轻量级的HTTP性能测试工具
+  # 官网：https://httpd.apache.org/docs/2.4/programs/ab.html
+  # 脚本：ab -n 10 -c 2 http://localhost:8091/api/jmeter/query_order_info?orderId=100001
+  ApacheBench:
+    image: anantadwi13/rakyll-hey
+    container_name: ApacheBench
+
+  # Siege是常用的HTTP性能测试工具，可以模拟多个并发用户发送请求。
+  # siege -c10 -r1 -p http://IP:8091/api/jmeter/query_order_info?orderId=100001
+  # siege -c10 -r1 -p http://localhost:8091/api/jmeter/query_order_info?orderId=100001
+  Siege:
+    image: cloudsuitetest/siege:4.1.5
+    container_name: Siege
